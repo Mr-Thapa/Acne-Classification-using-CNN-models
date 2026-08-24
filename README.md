@@ -46,7 +46,7 @@ source and place the extracted `Data/` folder in the project root:
 acne-classifier/
 ├── Data/
 ├── ...
-
+```
 ## Baseline CNN
 
 The initial CNN architecture consists of:
