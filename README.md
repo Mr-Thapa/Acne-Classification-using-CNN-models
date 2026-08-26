@@ -48,20 +48,56 @@ acne-classifier/
 ├── ...
 ```
 ## Baseline CNN
+The baseline CNN was developed from scratch and consists of two convolutional layers followed by max pooling. The extracted features are passed through a dense layer before the final five-class classifier.
 
-The initial CNN architecture consists of:
-
+### Architecture:
 ```text
 Input: 224 × 224 × 3
-
+        ↓
+Rescaling (1/255)
+        ↓
 Conv2D (32 filters, 3×3)
         ↓
 MaxPooling2D (2×2)
         ↓
 Conv2D (64 filters, 3×3)
         ↓
+MaxPooling2D (2×2)
+        ↓
 Flatten
         ↓
 Dense (128)
         ↓
 Output (5 classes)
+```
+
+## VGG16 Transfer Learning
+VGG16 was trained without its top dense layers, with all convolutional layers frozen to preserve its pretrained feature extraction capabilities. We used Global Average Pooling (GAP) after the convolutional base, followed by a classification layer for the five acne classes.
+
+### Architecture:
+```text
+Input: 224 × 224 × 3
+        ↓
+VGG16 Preprocessing Layer
+        ↓
+VGG16's Conv Layers (x13)
+... 
+...
+        ↓
+GlobalAveragePooling
+        ↓
+Output (5 classes)
+```
+
+## Current Progress:
+- [x] Train and Evaluated baseline CNN model.
+- [x] Train and Evaluated VGG16 model.
+   
+## Planned Work
+- [ ] Train and evaluate ResNet50
+- [ ] Compare all three models
+- [ ] Perform hyperparameter tuning to optimize model performance
+- [ ] Experiment with unfreezing some convolutional layers of VGG16 and ResNet50
+- [ ] Modify the baseline CNN to reduce overfitting
+- [ ] Deploy the final model using Flask
+
