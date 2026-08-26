@@ -44,18 +44,7 @@ if __name__ == "__main__":
             plt.axis("off")
         plt.show()
 
-normalization_layer = tf.keras.layers.Rescaling(1./255)
-train_dataset = train_dataset.map(
-    lambda images, labels: (normalization_layer(images), labels)
-)
 
-valid_dataset = valid_dataset.map(
-    lambda images, labels: (normalization_layer(images), labels)
-)
-
-test_dataset = test_dataset.map(
-    lambda images, labels: (normalization_layer(images), labels)
-)
 if __name__ == "__main__":
     for images, labels in train_dataset.take(1):
         print(images[0])

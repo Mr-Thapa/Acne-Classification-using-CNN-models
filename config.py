@@ -1,4 +1,4 @@
-Data_DIR="Data\AcneDataset"
+Data_DIR="Data/AcneDataset"
 
 IMG_SIZE=(224,224)
 

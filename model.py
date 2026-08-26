@@ -1,8 +1,11 @@
 import tensorflow as tf
 from config import IMG_SIZE
+
+
 def create_model():
     model=tf.keras.Sequential([
         tf.keras.Input(shape=(*IMG_SIZE,3)),
+        tf.keras.layers.Rescaling(1./255),
         tf.keras.layers.Conv2D(
             32,(3,3),activation="relu"
         ),
