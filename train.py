@@ -6,6 +6,7 @@ import sys
 choice=input('''Choose which model to train:
                     1. Baseline CNN
                     2. VGG-16
+                    3. ResNet50
                     Enter any other value to exit
                  
                  ''')
@@ -13,12 +14,19 @@ if choice=="1":
     from model import create_model
     LR=0.001
     model_name="baseline.keras"
+    EPOCHS=10
     
 elif choice=="2":
     from vgg_model import create_model
     LR=0.0005
     model_name="vgg16_trained.keras"
-    
+    EPOCHS=20
+
+elif choice=="3":
+    from resnet_model import create_model
+    LR=0.0001
+    model_name="resnet_trained.keras"
+    EPOCHS=20
 else:
     print("Exiting....")
     sys.exit()
@@ -50,7 +58,7 @@ early_stopping = tf.keras.callbacks.EarlyStopping(
 #train model
 model.fit(
     train_dataset,
-    epochs=10,
+    epochs=EPOCHS,
     validation_data=valid_dataset,
     verbose=2,
     callbacks=[checkpoint,early_stopping]
