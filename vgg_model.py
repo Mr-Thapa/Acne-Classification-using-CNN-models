@@ -14,7 +14,11 @@ def create_model():
     x=tf.keras.layers.GlobalAveragePooling2D()(x)
     output=tf.keras.layers.Dense(5,activation="softmax")(x)
     model=tf.keras.Model(inputs,output)
+
     return model
 if __name__ == "__main__":
     model = create_model()
     model.summary()
+    
+
+    

@@ -6,7 +6,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 models = {
     "Baseline CNN": "baseline.keras",
     "VGG16": "vgg16_trained.keras",
-    "ResNet50":"resnet_trained.keras"
+    "ResNet50":"resnet_trained.keras",
+    "VGG16 Fine Tuned": "vgg_finetuned_trained.keras"
 }
 
 

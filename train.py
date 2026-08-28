@@ -6,7 +6,8 @@ import sys
 choice=input('''Choose which model to train:
                     1. Baseline CNN
                     2. VGG-16
-                    3. ResNet50
+                    3. Finetune VGG-16
+                    4. ResNet50
                     Enter any other value to exit
                  
                  ''')
@@ -15,7 +16,7 @@ if choice=="1":
     LR=0.001
     model_name="baseline.keras"
     EPOCHS=20
-    
+
 elif choice=="2":
     from vgg_model import create_model
     LR=0.0005
@@ -23,6 +24,12 @@ elif choice=="2":
     EPOCHS=20
 
 elif choice=="3":
+    from vgg_finetune_model import create_model
+    LR=0.00005
+    model_name="vgg_finetuned_trained.keras"
+    EPOCHS=20
+    
+elif choice=="4":
     from resnet_model import create_model
     LR=0.0001
     model_name="resnet_trained.keras"

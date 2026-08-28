@@ -6,6 +6,7 @@ results.txt
 analyse.py
 #models
 *.keras
+Best_Model/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
