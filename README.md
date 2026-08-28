@@ -254,8 +254,8 @@ on this dataset.
 - [x] Train and evaluate ResNet50
 - [x] Compare all three models
 - [x] Perform hyperparameter tuning to optimize model performance
+- [x] Modify the baseline CNN to reduce overfitting
 ## Planned Work
 - [ ] Experiment with unfreezing some convolutional layers of VGG16 and ResNet50
-- [ ] Modify the baseline CNN to reduce overfitting
 - [ ] Deploy the final model using Flask
 
