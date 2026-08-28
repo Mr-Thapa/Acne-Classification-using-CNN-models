@@ -3,6 +3,7 @@ Data/
 
 #Result data
 results.txt
+analyse.py
 #models
 *.keras
 

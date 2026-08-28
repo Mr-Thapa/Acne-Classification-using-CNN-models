@@ -14,7 +14,7 @@ if choice=="1":
     from model import create_model
     LR=0.001
     model_name="baseline.keras"
-    EPOCHS=10
+    EPOCHS=20
     
 elif choice=="2":
     from vgg_model import create_model
