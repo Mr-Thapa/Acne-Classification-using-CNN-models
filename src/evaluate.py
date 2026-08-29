@@ -1,5 +1,6 @@
 import tensorflow as tf
-from DataLoad import test_dataset, class_names
+from src.DataLoad import test_dataset, class_names
+from src.config import CHECKPOINT_DIR
 from sklearn.metrics import classification_report, confusion_matrix
 
 
@@ -7,7 +8,8 @@ models = {
     "Baseline CNN": "baseline.keras",
     "VGG16": "vgg16_trained.keras",
     "ResNet50":"resnet_trained.keras",
-    "VGG16 Fine Tuned": "vgg_finetuned_trained.keras"
+    "VGG16 Fine Tuned": "vgg_finetuned_trained.keras",
+    "ResNet50 Fine Tuned":"resnet_finetuned_trained.keras"
 }
 
 
@@ -28,7 +30,7 @@ for model_name, model_path in models.items():
     print(model_name)
     print("=" * 50)
 
-    model = tf.keras.models.load_model(model_path)
+    model = tf.keras.models.load_model(CHECKPOINT_DIR/model_path)
 
     # Loss and accuracy
     loss, accuracy = model.evaluate(

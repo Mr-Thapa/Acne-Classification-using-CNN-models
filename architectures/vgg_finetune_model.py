@@ -1,8 +1,7 @@
 import tensorflow as tf
-from config import IMG_SIZE
-
+from src.config import CHECKPOINT_DIR
 def create_model():
-    model=tf.keras.models.load_model("vgg16_trained.keras")
+    model=tf.keras.models.load_model(CHECKPOINT_DIR/"vgg16_trained.keras")
     vgg=model.get_layer("vgg16")
     
     #Unfreeze Block 5

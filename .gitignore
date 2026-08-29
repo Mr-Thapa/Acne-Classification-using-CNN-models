@@ -4,6 +4,7 @@ Data/
 #Result data
 results.txt
 analyse.py
+dir.py
 #models
 *.keras
 Best_Model/

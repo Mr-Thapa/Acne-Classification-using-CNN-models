@@ -1,5 +1,5 @@
 import tensorflow as tf
-from config import IMG_SIZE
+from src.config import IMG_SIZE
 
 def create_model():
     vgg=tf.keras.applications.VGG16(

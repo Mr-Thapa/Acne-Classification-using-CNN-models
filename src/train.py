@@ -1,4 +1,6 @@
-from DataLoad import train_dataset,test_dataset,valid_dataset
+from src.DataLoad import train_dataset, valid_dataset
+from src.config import CHECKPOINT_DIR
+
 import tensorflow as tf
 import sys
 
@@ -8,31 +10,37 @@ choice=input('''Choose which model to train:
                     2. VGG-16
                     3. Finetune VGG-16
                     4. ResNet50
+                    5. Finetune ResNet50
                     Enter any other value to exit
                  
                  ''')
 if choice=="1":
-    from model import create_model
+    from architectures.model import create_model
     LR=0.001
     model_name="baseline.keras"
     EPOCHS=20
 
 elif choice=="2":
-    from vgg_model import create_model
+    from architectures.vgg_model import create_model
     LR=0.0005
     model_name="vgg16_trained.keras"
     EPOCHS=20
 
 elif choice=="3":
-    from vgg_finetune_model import create_model
+    from architectures.vgg_finetune_model import create_model
     LR=0.00005
     model_name="vgg_finetuned_trained.keras"
     EPOCHS=20
     
 elif choice=="4":
-    from resnet_model import create_model
+    from architectures.resnet_model import create_model
     LR=0.0001
     model_name="resnet_trained.keras"
+    EPOCHS=20
+elif choice=="5":
+    from architectures.resnet_finetune_model import create_model
+    LR=0.00001
+    model_name="resnet_finetuned_trained.keras"
     EPOCHS=20
 else:
     print("Exiting....")
@@ -45,12 +53,17 @@ model=create_model()
 model.compile(
     loss=tf.keras.losses.SparseCategoricalCrossentropy(),
     optimizer=tf.keras.optimizers.Adam(learning_rate=LR),
+    #optimizer = tf.keras.optimizers.SGD(
+    #    learning_rate=1e-3,
+    #    momentum=0.9,
+    #    nesterov=True
+    #), 
     metrics=["accuracy"]
 )
 
 #ensures best performance model is saved
 checkpoint = tf.keras.callbacks.ModelCheckpoint(
-    model_name,
+    CHECKPOINT_DIR/model_name,
     monitor="val_accuracy",
     save_best_only=True,
     mode="max"
@@ -71,4 +84,4 @@ model.fit(
     callbacks=[checkpoint,early_stopping]
 )
 #explicit model save
-model.save(model_name)
+model.save(CHECKPOINT_DIR/model_name)

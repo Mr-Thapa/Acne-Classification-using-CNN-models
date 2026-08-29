@@ -1,11 +1,10 @@
-import os
 import tensorflow as tf
-from config import Data_DIR,BATCH_SIZE, IMG_SIZE
+from src.config import DATA_DIR,BATCH_SIZE, IMG_SIZE
 
 
-train_path=f"{Data_DIR}/train"
-valid_path=f"{Data_DIR}/valid"
-test_path=f"{Data_DIR}/test"
+train_path=DATA_DIR/"train"
+valid_path=DATA_DIR/"valid"
+test_path=DATA_DIR/"test"
 
 train_dataset=tf.keras.utils.image_dataset_from_directory(
     train_path,
