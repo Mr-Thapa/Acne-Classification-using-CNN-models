@@ -1,3 +1,5 @@
 tensorflow[and-cuda]==2.20.0
 scikit-learn
 matplotlib
+pandas
+seaborn
