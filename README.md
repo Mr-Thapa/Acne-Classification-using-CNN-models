@@ -2,7 +2,6 @@
 
 An image classification project for identifying different types of acne using
 Convolutional Neural Networks (CNNs) and transfer learning.
-
 The project focuses on building a baseline CNN from scratch and comparing its
 performance with pretrained architectures such as VGG16 and ResNet50. The goal
 is to understand how model architecture, regularization, and transfer learning
@@ -39,9 +38,97 @@ The test set is kept separate from model selection and hyperparameter decisions.
 - VGG16 — Transfer learning with frozen convolutional base
 - VGG16 — Fine-tuning of the final convolutional block
 - ResNet50 — Transfer learning with frozen convolutional base
-
+- ResNet50 — Fine-tuning of the final convolutional block
+  
 The baseline model was developed from scratch to establish a reference point
 before evaluating pretrained architectures.
+
+## Setup and Running
+The project was developed and tested using WSL (Windows Subsystem for Linux) with a Python virtual environment.
+
+The required Python version is specified in the python.version file.
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd acne-classifier
+```
+### 2. Create the Virtual Environment
+Create a virtual environment using the Python version specified in python.version:
+```bash
+python3 -m venv .venv
+```
+Activate the environment:
+```bash
+source .venv/bin/activate
+```
+### 3. Install Dependencies
+Install the required Python packages:
+```bash
+pip install -r requirements.txt
+```
+### 4. Add the Dataset
+Download the Acne Dataset Image from the original Kaggle source and place the extracted Data/ directory in the project root.
+
+The expected structure is:
+```
+acne-classifier/
+├── Data/
+├── src/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── DataLoad.py
+│   ├── train.py
+│   ├── evaluate.py
+│   └── ...
+├── architectures/
+│   ├── __init__.py
+│   ├── model.py
+│   ├── vgg16_model.py
+│   ├── resnet_model.py
+│   ├── vgg16_finetune_model.py
+│   └── ...
+├── requirements.txt
+├── python.version
+└── ...
+```
+### 5. Run the Project
+The Python files are organized as modules under the src package. They should therefore be executed from the project root using Python's module syntax rather than by running the files directly.
+
+For example, to evaluate the trained models:
+```bash
+python3 -m src.evaluate
+```
+Other modules can be run in the same way:
+```bash
+python3 -m src.train
+```
+This approach ensures that the project imports are resolved correctly from the package structure.
+
+### Evaluation Outputs
+Running:
+```bash
+python3 -m src.evaluate
+```
+evaluates the saved models on the test set and generates:
+
+- Test accuracy
+- Test loss
+- Classification reports
+- Confusion matrices
+- Per-class F1 score plots
+- Model comparison plots
+- A CSV containing the evaluation results
+- Generated figures and results are saved under:
+```
+results/
+├── model_results.csv
+└── figures/
+    ├── model_accuracy_comparison.png
+    ├── model_performance_comparison.png
+    ├── ...
+```
+The test dataset is loaded with shuffle=False so that predictions remain aligned with the corresponding ground-truth labels when generating confusion matrices and classification reports.
 
 ## Dataset
 
@@ -70,13 +157,9 @@ source and place the extracted `Data/` folder in the project root:
 ```text
 acne-classifier/
 ├── Data/
-├── config.py
-├── DataLoad.py
-├── model.py
-├── vgg_model.py
-├── resnet_model.py
-├── train.py
-├── evaluate.py
+├── src/
+├── architectures/
+├── models
 └── ...
 ```
 Dataset Split
@@ -97,6 +180,7 @@ Images are resized to:
 224 × 224 × 3
 ```
 The test dataset is loaded with shuffle=False so that predictions can be matched reliably with their corresponding true labels when generating confusion matrices and classification reports.
+
 ## Initial Baseline Scratch CNN 
 The baseline CNN was developed from scratch and consists of two convolutional layers followed by max pooling. The extracted features are passed through a dense layer before the final five-class classifier.
 
@@ -123,7 +207,6 @@ Output (5 classes)
 
 ### Results
 The model contained approximately 23.9 million parameters. Most of these parameters came from the Flatten → Dense(128) connection.
-
 The model achieved approximately 95% training accuracy while validation accuracy remained around 60%, providing strong evidence of overfitting.
 
 ## Optimized Scratch CNN
@@ -165,6 +248,10 @@ Output (5 classes)
 ### Results
 Increasing the convolutional depth improved validation performance. The best observed validation accuracy for the scratch CNN was approximately 63%.
 
+<img width="2254" height="1752" alt="baseline_cnn_confusion_matrix" src="https://github.com/user-attachments/assets/b951695c-7555-49dd-8474-8b01e8027a27" />
+
+<img width="2650" height="1752" alt="baseline_cnn_f1_scores" src="https://github.com/user-attachments/assets/4880b4f8-3047-491f-851d-d336c0981c5e" />
+
 Despite this improvement, the scratch model continued to show a substantial training/validation gap.
 
 ## VGG16 Transfer Learning
@@ -187,6 +274,11 @@ Output (5 classes)
 
 ### Results
 With the convolutional base completely frozen:
+
+<img width="2254" height="1752" alt="vgg16_confusion_matrix" src="https://github.com/user-attachments/assets/a7fea3e8-8913-4d74-ae82-641a1adea8b6" />
+
+<img width="2650" height="1752" alt="vgg16_f1_scores" src="https://github.com/user-attachments/assets/8b453cf2-5038-4b5f-8246-f846c2f8adc7" />
+
 - Test accuracy: 69.06%
 - Macro F1: 0.71
   
@@ -210,6 +302,10 @@ The learning rate was reduced compared with the original training configuration 
 
 ### Results
 Fine-tuning Block 5 produced a substantial improvement:
+
+<img width="2254" height="1752" alt="vgg16_fine_tuned_confusion_matrix" src="https://github.com/user-attachments/assets/4a1cce51-7f42-4763-9e2e-04a8807e839a" />
+
+<img width="2650" height="1752" alt="vgg16_fine_tuned_f1_scores" src="https://github.com/user-attachments/assets/dcbe31ac-d94e-4ffb-978e-bc2e70f8db04" />
 
 - Test accuracy: 90.09%
 - Macro F1: 0.91
@@ -276,69 +372,118 @@ Dense (5 classes)
 ### Result
 The frozen ResNet50 achieved:
 
+<img width="2254" height="1752" alt="resnet50_confusion_matrix" src="https://github.com/user-attachments/assets/364726fa-50af-4aed-966b-ab4d6c8ecee6" />
+
+<img width="2650" height="1752" alt="resnet50_f1_scores" src="https://github.com/user-attachments/assets/1fa7bef8-d2b2-4def-93de-e0415e82def7" />
+
 - Test accuracy: 66.88%
 - Macro F1: 0.69
 
 This was slightly below the frozen VGG16 model.
 
-Fine-tuning ResNet50 is the next major experiment.
+## ResNet50 Fine-Tuning
+After evaluating the frozen ResNet50 model, fine-tuning was performed to determine whether adapting the pretrained representation to the acne dataset could improve performance.
+The initial fine-tuning experiment made the conv5_block3 layer trainable while keeping the earlier ResNet50 layers frozen.
+
+### Fine-Tuning conv5_block3
+The first experiment fine-tuned the final convolutional block of ResNet50:
+```
+ResNet50 pretrained on ImageNet
+        ↓
+Earlier layers frozen
+        ↓
+conv5_block3 trainable
+        ↓
+GlobalAveragePooling2D
+        ↓
+Dense (5 classes)
+```
+The model achieved:
+
+- Test accuracy: 86.06%
+- Macro F1: 0.87
+- Test loss: 0.3774
+
+### Fine-Tuning with SGD and Momentum
+A second ResNet50 fine-tuning experiment used the same general fine-tuning strategy but changed the optimizer to SGD with momentum.
+
+This produced a modest improvement:
+
+<img width="2254" height="1752" alt="resnet50_fine_tuned_confusion_matrix" src="https://github.com/user-attachments/assets/ffd917bb-c5a4-492f-a412-d17158189dc2" />
+
+<img width="2650" height="1752" alt="resnet50_fine_tuned_f1_scores" src="https://github.com/user-attachments/assets/137d0359-bd0e-4342-80fa-9c82edb6804d" />
+
+- Test accuracy: 86.60%
+- Macro F1: 0.88
+- Test loss: 0.3563
+
+Compared with the first ResNet50 fine-tuning experiment, SGD with momentum improved test accuracy from 86.06% to 86.60% and macro F1 from 0.87 to 0.88.
+
+### ResNet50 Fine-Tuning Conclusion
+Fine-tuning substantially improved ResNet50 compared with using the completely frozen convolutional base:
+```
+Frozen ResNet50
+66.88% test accuracy
+        ↓
+Fine-tuned ResNet50
+86.06% test accuracy
+        ↓
+Fine-tuned ResNet50 + SGD with momentum
+86.60% test accuracy
+```
+This confirms that adapting pretrained high-level features to the acne dataset was beneficial.
+
+However, the best fine-tuned ResNet50 still performed below the best fine-tuned VGG16 model:
+```
+VGG16 + Block 5 fine-tuning
+90.09% test accuracy
+        ↓
+ResNet50 + conv5 fine-tuning + SGD
+86.60% test accuracy
+```
+Therefore, VGG16 with all three convolutional layers in Block 5 fine-tuned was selected as the final model.
 
 ## Overall Results
 
-The current test-set performance of the three main architectures is:
+<img width="3550" height="1753" alt="model_performance_comparison" src="https://github.com/user-attachments/assets/bc1f7736-536e-420f-9ab5-8befcfe43677" />
+
+The final test-set performance of the three main architectures is:
 
 | Model | Test Accuracy | Macro F1 |
 |---|---:|---:|
 | Initial Scratch CNN | 58.93% | 0.58 |
 | Optimized Scratch CNN | 61.98% | 0.62 |
-| ResNet50 | 66.88% | 0.69 |
+| ResNet50 (Frozen) | 66.88% | 0.69 |
 | VGG16 (Frozen) | 69.06% | 0.71 |
 | VGG16 (Block 5, 1 conv) | 85.84% | 0.86 |
-| VGG16 (Block 5, 3 convs) | 90.09% | 0.91 |
+| ResNet50 (Fine-tuned conv5_block3) | 86.06% | 0.87 |
+| ResNet50 (Fine-tuned + SGD momentum) | 86.60% | 0.88 |
+| **VGG16 (Block 5, 3 convs)** | **90.09%** | **0.91** |
 
-
-The current best model is VGG16 with all three convolutional layers in Block 5 fine-tuned.
-
-Performance is not uniform across classes. Papules and Pustules consistently remain the most difficult classes to distinguish, while Blackheads and Whiteheads are generally classified more successfully.
-
-The Whitehead results should be interpreted with some caution because the test set contains only 57 Whitehead images.
+The results demonstrate a clear progression from training a CNN from scratch to using pretrained representations and finally adapting those representations through fine-tuning.
+The best overall model is VGG16 with all three convolutional layers in Block 5 fine-tuned, achieving 90.09% test accuracy and 0.91 macro F1.
 
 ## Experimental Findings
-
-Rather than only comparing final architectures, several controlled
-experiments were performed to understand the behavior of the custom CNN.
+Rather than only comparing final architectures, several controlled experiments were performed to understand the behavior of the custom CNN and pretrained models.
 
 ### Overfitting
-
 The initial CNN reached approximately 95% training accuracy while achieving only around 60% validation accuracy.
-
 This indicated substantial overfitting.
-
 The majority of the model's parameters came from the Flatten → Dense(128) connection, making the dense classifier a major source of model capacity.
-
 Later experiments showed that increasing model capacity does not automatically solve the problem, while simply reducing capacity can prevent the model from learning sufficiently useful representations.
 
 ### Dropout
-
 `Dropout(0.5)` was added after the `Dense(128)` layer.
-
-Dropout reduced training accuracy and therefore reduced the model's ability to
-memorize the training set, but validation accuracy did not improve
-substantially.
-
-This demonstrated that reducing overfitting does not necessarily improve
-generalization.
+Dropout reduced training accuracy and therefore reduced the model's ability to memorize the training set, but validation accuracy did not improve substantially.
+This demonstrated that reducing overfitting does not necessarily improve generalization.
 
 ### L2 Regularization
-
 L2 regularization was applied to the `Dense(128)` layer:
-
 ```python
 kernel_regularizer=tf.keras.regularizers.l2(0.0001)
 ```
 The regularized model showed reduced training performance, but validation
 accuracy remained approximately in the same range as before.
-
 L2 was therefore not retained in the final scratch CNN.
 
 ### Reducing Classifier Capacity
@@ -356,10 +501,8 @@ to solve the problem.
 ### Increasing Convolutional Depth
 Additional convolutional blocks were introduced to test whether the model
 needed a more powerful feature extractor.
-
 Increasing the depth improved validation performance. The best scratch CNN
 currently uses three convolutional blocks with 32, 64, and 128 filters.
-
 The best observed validation accuracy was approximately 63%.
 
 However, the model still showed a substantial training/validation gap.
@@ -367,11 +510,9 @@ However, the model still showed a substantial training/validation gap.
 ### Data Augmentation
 Several augmentation techniques were tested independently, including
 rotation, horizontal flipping, translation, and brightness changes.
-
 The geometric transformations tested generally reduced performance on the
 scratch CNN. Brightness augmentation was less disruptive but did not produce
 a convincing improvement.
-
 These experiments suggested that augmentation is not automatically beneficial
 for this dataset/model combination and that transformations must be chosen
 according to the visual characteristics of the problem.
@@ -381,15 +522,24 @@ VGG16 and ResNet50 were used as pretrained feature extractors with their
 convolutional bases initially frozen.
 
 Both pretrained models substantially outperformed the scratch CNN.
-
+```
+Optimized Scratch CNN
+61.98%
+        ↓
+ResNet50 (Frozen)
+66.88%
+        ↓
+VGG16 (Frozen)
+69.06%
+```
 This suggests that the pretrained models provide more useful visual
 representations than the relatively small CNN was able to learn from scratch
 on this dataset.
 
 ### Fine-Tuning
-Fine-tuning VGG16 produced a much larger improvement than frozen transfer learning.
+Fine-tuning produced a much larger improvement than frozen transfer learning.
 
-Unfreezing the final VGG16 convolutional block increased test accuracy from:
+For VGG16, unfreezing all three convolutional layers in Block 5 increased test accuracy from:
 ```
 69.06%
 ```
@@ -401,10 +551,36 @@ Fine-tuning only the final convolutional layer, however, reduced performance to:
 ```
 85.84%
 ```
-This provided evidence that multiple high-level convolutional layers were useful for adapting the pretrained representation to acne-specific visual patterns.
+This provided evidence that multiple high-level convolutional layers were useful for adapting the pretrained representation to acne-specific visual patterns. The experiment also demonstrated that a larger trainable parameter count does not necessarily mean worse generalization. In this case, fine-tuning approximately 7 million parameters produced better test performance than restricting fine-tuning to approximately 2.4 million trainable parameters.
 
-The experiment also demonstrated that a larger trainable parameter count does not necessarily mean worse generalization. In this case, fine-tuning approximately 7 million parameters produced better test performance than restricting fine-tuning to approximately 2.4 million trainable parameters.
+ResNet50 showed a similar pattern. Fine-tuning conv5_block3 increased performance from 66.88% to 86.06%, while using SGD with momentum further improved performance to 86.60%.
 
+However, VGG16 remained the stronger architecture after fine-tuning.
+
+Overall, these experiments demonstrate that the effectiveness of transfer learning depends not only on the pretrained architecture but also on how much of the pretrained representation is adapted to the target task.
+
+## Final Model Selection
+After comparing scratch CNNs, frozen pretrained models, and fine-tuned VGG16 and ResNet50 models, VGG16 with Block 5 fine-tuning was selected as the final model.
+
+The selected architecture is:
+```
+VGG16 pretrained on ImageNet
+        ↓
+Block 1–4 frozen
+        ↓
+Block 5 convolutional layers trainable
+        ↓
+GlobalAveragePooling2D
+        ↓
+Dense (5 classes)
+```
+Final Test Performance
+- Accuracy: 90.09%
+- Macro F1: 0.91
+- Loss: 0.4740
+The strongest remaining classification difficulty is distinguishing Papules from Pustules.
+
+Whitehead performance should be interpreted with some caution because the test set contains only 57 Whitehead images.
 
 ## Current Progress:
 - [x] Train and Evaluated baseline CNN model.
@@ -420,27 +596,6 @@ The experiment also demonstrated that a larger trainable parameter count does no
 - [x] Compare scratch CNN, VGG16, and ResNet50
 - [x] Fine-tune VGG16
 - [x] Compare different VGG16 fine-tuning depths
-- [ ] Fine-tune ResNet50
-- [ ] Compare fine-tuned VGG16 and ResNet50
+- [x] Fine-tune ResNet50
+- [x] Compare fine-tuned VGG16 and ResNet50
 - [ ] Deploy the final model using Flask
- 
-## Current Best Model
-The current best-performing model is:
-```
-VGG16 pretrained on ImageNet
-        ↓
-Block 1–4 frozen
-        ↓
-Block 5 convolutional layers trainable
-        ↓
-GlobalAveragePooling2D
-        ↓
-Dense (5 classes)
-```
-Final Test Performance:
-- Accuracy : 90.09%
-- Macro F1 : 0.91
-- Loss     : 0.4740
-
-The strongest remaining classification difficulty is distinguishing Papules from Pustules.
-
