@@ -7,6 +7,7 @@ performance with pretrained architectures such as VGG16 and ResNet50. The goal
 is to understand how model architecture, regularization, and transfer learning
 affect classification performance.
 
+| Note: This project is intended as an ML engineering/learning project and is not a medical diagnostic tool.
 ## Project Overview
 
 This project explores acne image classification through a series of
@@ -70,10 +71,15 @@ pip install -r requirements.txt
 ### 4. Add the Dataset
 Download the Acne Dataset Image from the original Kaggle source and place the extracted Data/ directory in the project root.
 
-The expected structure is:
+The project structure is:
 ```
 acne-classifier/
-├── Data/
+├── app/
+│   ├── ...
+│
+├── architectures/
+│   ├── ...
+│
 ├── src/
 │   ├── __init__.py
 │   ├── config.py
@@ -81,16 +87,20 @@ acne-classifier/
 │   ├── train.py
 │   ├── evaluate.py
 │   └── ...
-├── architectures/
-│   ├── __init__.py
-│   ├── model.py
-│   ├── vgg16_model.py
-│   ├── resnet_model.py
-│   ├── vgg16_finetune_model.py
-│   └── ...
+│
+├── models/
+│   └── final/
+│       └── vgg_finetuned_trained.keras
+│
+├── Data/                  # Not included in repository
+├── results/               # Generated evaluation results
 ├── requirements.txt
+├── requirements_deploy.txt
 ├── python.version
-└── ...
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+└── README.md
 ```
 ### 5. Run the Project
 The Python files are organized as modules under the src package. They should therefore be executed from the project root using Python's module syntax rather than by running the files directly.
@@ -582,6 +592,41 @@ The strongest remaining classification difficulty is distinguishing Papules from
 
 Whitehead performance should be interpreted with some caution because the test set contains only 57 Whitehead images.
 
+## Deployment
+The final model is exposed through a FastAPI inference API and packaged as a Docker container.
+
+The deployment image contains only the components required for inference:
+```
+Docker Container
+├── FastAPI application
+├── Inference code
+├── Configuration
+├── Final VGG16 model
+└── Deployment dependencies
+```
+Training dependencies and the dataset are not included in the deployment image.
+
+## Run with Docker
+Build the image:
+```bash
+docker build -t acne-classifier .
+```
+Run the container:
+```bash
+docker run -p 8000:8000 acne-classifier
+```
+The API will then be available at:
+```bash
+http://localhost:8000
+```
+FastAPI's interactive documentation is available at:
+```bash
+http://localhost:8000/docs
+```
+A minimal web frontend is planned to provide image upload and prediction functionality without requiring users to interact directly with the API documentation.
+
+
+
 ## Current Progress:
 - [x] Train and Evaluated baseline CNN model.
 - [x] Modify baseline CNN to reduce overfitting
@@ -598,4 +643,8 @@ Whitehead performance should be interpreted with some caution because the test s
 - [x] Compare different VGG16 fine-tuning depths
 - [x] Fine-tune ResNet50
 - [x] Compare fine-tuned VGG16 and ResNet50
-- [ ] Deploy the final model using Flask
+- [x] Build FastAPI inference API
+- [x] Containerize the application with Docker
+- [ ] Add minimal web frontend
+- [ ] Final Docker deployment test
+- [ ] Publish Docker image
