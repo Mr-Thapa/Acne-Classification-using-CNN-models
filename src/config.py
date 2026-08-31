@@ -7,4 +7,6 @@ DATA_DIR=PROJECT_ROOT/"Data/AcneDataset"
 CHECKPOINT_DIR=PROJECT_ROOT/"models"/"checkpoint"
 IMG_SIZE=(224,224)
 
+FINAL_MODEL=PROJECT_ROOT/"models"/"final"/"vgg_finetuned_trained.keras"
+
 BATCH_SIZE=32

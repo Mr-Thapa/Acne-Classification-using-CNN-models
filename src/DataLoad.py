@@ -42,9 +42,6 @@ if __name__ == "__main__":
             plt.title(train_dataset.class_names[labels[i]])
             plt.axis("off")
         plt.show()
-
-
-if __name__ == "__main__":
     for images, labels in train_dataset.take(1):
         print(images[0])
     for images, labels in train_dataset.take(1):
