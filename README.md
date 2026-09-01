@@ -7,6 +7,8 @@ performance with pretrained architectures such as VGG16 and ResNet50. The goal
 is to understand how model architecture, regularization, and transfer learning
 affect classification performance.
 
+The final model is exposed through a FastAPI inference API and packaged as a Docker container for reproducible deployment.
+
 | Note: This project is intended as an ML engineering/learning project and is not a medical diagnostic tool.
 ## Project Overview
 
@@ -32,7 +34,61 @@ Next experiment
 ```
 The test set is kept separate from model selection and hyperparameter decisions. Validation performance is used during development, while the test set is used for final evaluation.
 
-### Models
+## Deployment
+The final model is exposed through a FastAPI inference API and packaged as a Docker container.
+
+The deployment image contains only the components required for inference:
+```
+Docker Container
+├── FastAPI application
+├── Inference code
+├── Configuration
+├── Final VGG16 model
+└── Deployment dependencies
+```
+Training dependencies and the dataset are not included in the deployment image.
+
+### Run With Docker
+The published image is available as:
+```bash
+mrthapa2102/acne-classifier:latest
+```
+Pull the image:
+```bash
+docker pull mrthapa2102/acne-classifier:latest
+```
+Run it:
+```bash
+docker run --rm -p 8000:8000 mrthapa2102/acne-classifier:latest
+```
+Then open the web frontend:
+```
+http://localhost:8000
+```
+The FastAPI interactive documentation is available at:
+```
+http://localhost:8000/docs
+```
+
+### API
+`GET /health`
+Used to verify that the API is running.
+
+`POST /predict`
+Accepts an uploaded image and runs it through the inference pipeline.
+
+The inference pipeline handles:
+
+- Input validation
+- Image decoding
+- JPEG, PNG, and WebP image formats
+- Image resizing
+- Model preprocessing
+- Prediction using the final VGG16 model
+- Invalid files return an HTTP 400 response.
+
+
+## Models
 
 - Custom CNN — Baseline model trained from scratch
 - Optimized Scratch CNN — Deeper CNN with dropout
@@ -584,48 +640,13 @@ GlobalAveragePooling2D
         ↓
 Dense (5 classes)
 ```
-Final Test Performance
+#### Final Test Performance
 - Accuracy: 90.09%
 - Macro F1: 0.91
 - Loss: 0.4740
 The strongest remaining classification difficulty is distinguishing Papules from Pustules.
 
 Whitehead performance should be interpreted with some caution because the test set contains only 57 Whitehead images.
-
-## Deployment
-The final model is exposed through a FastAPI inference API and packaged as a Docker container.
-
-The deployment image contains only the components required for inference:
-```
-Docker Container
-├── FastAPI application
-├── Inference code
-├── Configuration
-├── Final VGG16 model
-└── Deployment dependencies
-```
-Training dependencies and the dataset are not included in the deployment image.
-
-## Run with Docker
-Build the image:
-```bash
-docker build -t acne-classifier .
-```
-Run the container:
-```bash
-docker run -p 8000:8000 acne-classifier
-```
-The API will then be available at:
-```bash
-http://localhost:8000
-```
-FastAPI's interactive documentation is available at:
-```bash
-http://localhost:8000/docs
-```
-A minimal web frontend is planned to provide image upload and prediction functionality without requiring users to interact directly with the API documentation.
-
-
 
 ## Current Progress:
 - [x] Train and Evaluated baseline CNN model.
@@ -645,6 +666,6 @@ A minimal web frontend is planned to provide image upload and prediction functio
 - [x] Compare fine-tuned VGG16 and ResNet50
 - [x] Build FastAPI inference API
 - [x] Containerize the application with Docker
-- [ ] Add minimal web frontend
-- [ ] Final Docker deployment test
-- [ ] Publish Docker image
+- [x] Add minimal web frontend
+- [x] Final Docker deployment test
+- [x] Publish Docker image
