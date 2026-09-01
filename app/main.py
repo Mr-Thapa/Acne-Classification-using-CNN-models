@@ -1,5 +1,6 @@
 from fastapi import FastAPI,UploadFile,File, HTTPException
-
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from app.inference import predict,Invalid_Image_Exception
 
 app=FastAPI()
@@ -12,6 +13,12 @@ ALLOWED_TYPES = {
     "image/png",
     "image/webp",
 }
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/")
+async def serve_frontend():
+    return FileResponse("frontend/index.html")
+
 
 @app.post("/predict")
 async def predict_image(file:UploadFile=File(...)):

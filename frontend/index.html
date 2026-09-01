@@ -1,0 +1,82 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acne Classifier</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+</head> <body>
+<main class="container">
+
+    <section class="card">
+
+        <h1>ACNE CLASSIFIER</h1>
+
+        <p class="subtitle">
+            Upload an image to classify acne.
+        </p>
+
+        <div class="upload-area">
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/jpeg, image/png, image/webp"
+                hidden
+            >
+
+            <label for="imageInput" class="choose-button">
+                Choose Image
+            </label>
+
+            <p id="fileName" class="file-name">
+                No image selected
+            </p>
+
+        </div>
+
+        <div
+            id="previewContainer"
+            class="preview-container"
+        >
+            <img
+                id="imagePreview"
+                src=""
+                alt="Selected image preview"
+            >
+        </div>
+
+        <button
+            id="predictButton"
+            class="predict-button"
+            disabled
+        >
+            Predict
+        </button>
+
+        <div
+            id="loading"
+            class="loading hidden"
+        >
+            Analyzing image...
+        </div>
+
+        <div
+            id="result"
+            class="result hidden"
+        >
+            <h2 id="predictionText"></h2>
+
+            <p id="confidenceText"></p>
+        </div>
+
+        <div
+            id="error"
+            class="error hidden"
+        ></div>
+
+    </section>
+
+</main>
+
+<script src="/static/script.js"></script>
+
+</body> </html>

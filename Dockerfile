@@ -9,6 +9,7 @@ COPY app/ ./app/
 COPY src/__init__.py ./src/__init__.py
 COPY src/config.py ./src/config.py
 COPY models/final/vgg_finetuned_trained.keras ./models/final/vgg_finetuned_trained.keras
+COPY frontend/ ./frontend/
 
 EXPOSE 8000
 
